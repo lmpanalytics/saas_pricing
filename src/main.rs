@@ -1,13 +1,35 @@
-use std::env;
+extern crate clap;
+use clap::{App, Arg};
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
+    let matches = App::new("SaaS CPQ")
+        .version("0.0.1")
+        .author("Magnus Palm <lmp.consulting@hotmail.com>")
+        .about("Calculates the price of the SaaS selected subscription level and options")
+        .arg(
+            Arg::with_name("level")
+                .short("l")
+                .long("level")
+                .takes_value(true)
+                .help("The level of the subscription: Free, Pro, Enterprise"),
+        )
+        .arg(
+            Arg::with_name("mod")
+                .short("m")
+                .long("modules")
+                .takes_value(true)
+                .help("A comma separated list of selected modules: Forecast,Planning,Rolling12"),
+        )
+        .get_matches();
 
-    // The first argument is the path that was used to call the program.
-    println!("My path is {}.", args[0]);
-
-    // The rest of the arguments are the passed command line parameters.
-    // Call the program like this:
-    //   $ ./args arg1 arg2
-    println!("I got {:?} arguments: {:?}.", args.len() - 1, &args[1..]);
+    let level_input = matches
+        .value_of("level")
+        .unwrap_or("Missing input on subscription level");
+    let modules_list_input = matches
+        .value_of("mod")
+        .unwrap_or("Missing input on list of selected modules");
+    println!(
+        "The level input passed is: {}, and the list of modules are: {}",
+        level_input, modules_list_input
+    );
 }
